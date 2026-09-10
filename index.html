@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Intelligent Pump Hydrodynamics & Cavitation Diagnostic Digital Twin</title>
-    <link rel="stylesheet" href="css/style.css?v=3.0">
+    <link rel="stylesheet" href="css/style.css?v=4.0">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -20,7 +20,7 @@
             <p class="brand-subtitle">Centrifugal Pump Hydraulics: Affinity Laws, MCSA Non-Intrusive Cavitation Detection & Joukowsky Water Hammer Mitigation</p>
         </div>
         <div class="header-controls">
-            <button id="guideBtn" class="btn-guide">📖 How to Use & Problem Solved</button>
+            <button id="guideBtn" class="btn-guide">🎮 Guided Tour</button>
             <a href="https://github.com/elomarjc/pump-hydrodynamics-digital-twin" target="_blank" class="btn-link">GitHub Source</a>
         </div>
     </header>
@@ -162,121 +162,655 @@
 
     <script type="module" src="js/app.js"></script>
 
-    <!-- Interactive Guide & Problem Overview Modal -->
-    <div id="guideModal" class="guide-modal-overlay">
-        <div class="guide-modal-card">
-            <div class="guide-modal-header">
-                <h2>💧 Intelligent Pump Hydrodynamics & Cavitation Twin</h2>
-                <button id="guideClose" class="guide-modal-close" aria-label="Close modal">&times;</button>
-            </div>
-            <div class="guide-modal-body">
-                <div class="guide-section">
-                    <h3>🎯 The Industrial Problem Solved</h3>
-                    <p>Centrifugal pumps in water supply, cooling towers, and district heating suffer from cavitation—the violent vapor bubble collapse that occurs when suction pressure drops below liquid vapor pressure (NPSHa &lt; NPSHr). Cavitation erodes impeller blades, destroys mechanical seals, and causes pump failure. Furthermore, rapid valve shutoffs generate water hammer shockwaves (Joukowsky surge) that rupture pipelines.</p>
-                </div>
-
-                <div class="guide-section">
-                    <h3>💡 How This Digital Twin Solves It</h3>
-                    <p>Simulates pump Affinity Laws (Q proportional to n, H proportional to n^2), system resistance curves, Thoma cavitation parameters, and Motor Current Signature Analysis (MCSA) that detects cavitation non-intrusively via electrical stator current sidebands without expensive external vibration sensors.</p>
-                </div>
-
-                <div class="guide-section">
-                    <h3>🕹️ Interactive Quickstart Tutorial (Try This Now!)</h3>
-                    <ul class="guide-step-list">
-                    <li class="guide-step-item">
-                        <span class="guide-step-num">1</span>
-                        <div class="guide-step-content">
-                            <strong>Affinity Laws & Operating Point:</strong> Adjust VFD Motor Speed (RPM) and watch the Cyan Pump Head Curve scale with Affinity Laws, shifting the operating duty point.
-                        </div>
-                    </li>
-                    <li class="guide-step-item">
-                        <span class="guide-step-num">2</span>
-                        <div class="guide-step-content">
-                            <strong>Induce Cavitation Inception:</strong> Drag Suction Pressure down below 0.8 Bar: Available NPSH drops below Required NPSH, triggering CAVITATION INCEPTION. Notice vapor bubbles around the impeller eye and cavitation sidebands spiking on the center MCSA FFT spectrum.
-                        </div>
-                    </li>
-                    <li class="guide-step-item">
-                        <span class="guide-step-num">3</span>
-                        <div class="guide-step-content">
-                            <strong>Compare Water Hammer vs Soft Ramp:</strong> Compare '💥 Sudden Trip (Shockwave)' (+14.2 Bar Joukowsky surge) against '🛡️ VFD Soft Ramp' (safe, shock-free fluid deceleration).
-                        </div>
-                    </li>
-                    </ul>
-                </div>
-
-                <div class="guide-section">
-                    <h3>📊 Telemetry & Control Glossary</h3>
-                    <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem;">
-                        <li><strong>NPSHa vs. NPSHr:</strong> Net Positive Suction Head Available (NPSHa) must exceed Net Positive Suction Head Required (NPSHr) to prevent fluid pressure from dropping below vapor pressure.</li><li><strong>MCSA (Motor Current Signature Analysis):</strong> Non-intrusive electrical sensing method that detects mechanical cavitation torque ripple by monitoring stator current FFT sidebands (fe ± k*fr).</li><li><strong>Joukowsky Water Hammer:</strong> Pressure surge equation (&Delta;P = &rho; * a * &Delta;v) describing shockwaves that propagate through piping when a fluid column is stopped instantaneously.</li>
-                    </ul>
-                </div>
-            </div>
-            <div class="guide-modal-footer">
+    <div class="guide-modal-footer">
                 <button id="guideStart" class="btn-guide-start">🚀 Start Interactive Simulator</button>
             </div>
         </div>
     </div>
 
-    <!-- Floating Quick Guide Pill (Always visible & 1-tap accessible on mobile & desktop) -->
-    <button id="guideBtnFloating" class="btn-guide-floating" aria-label="Open Guide">💡 Tutorial & Problem Solved</button>
+    
 
-    <!-- Modal Toggle & Auto-Open Script -->
+
+
+    
+
+
+    
+
     <script>
-        (function() {
-            const guideBtn = document.getElementById('guideBtn');
-            const guideBtnFloating = document.getElementById('guideBtnFloating');
-            const guideModal = document.getElementById('guideModal');
-            const guideClose = document.getElementById('guideClose');
-            const guideStart = document.getElementById('guideStart');
+    (function() {
+        const steps = [
+    {
+        "target": "#speedSlider",
+        "title": "\ud83d\udc49 Step 1: Adjust VFD Motor Speed (RPM)",
+        "why": "Demonstrates pump Affinity Laws: flow scales linearly (Q \u221d n) and pressure head scales quadratically (H \u221d n\u00b2), shifting the operating duty point."
+    },
+    {
+        "target": "#suctionSlider",
+        "title": "\ud83d\udc49 Step 2: Drag Suction Pressure Below 0.8 Bar",
+        "why": "Available suction head drops below required head (NPSHa < NPSHr), triggering violent cavitation bubble collapse that destroys impeller blades."
+    },
+    {
+        "target": "#mcsaCanvas",
+        "title": "\ud83d\udc49 Step 3: Inspect MCSA Electrical FFT Spectrum",
+        "why": "Motor Current Signature Analysis detects cavitation non-intrusively via stator current sideband harmonics without needing expensive vibration sensors."
+    },
+    {
+        "target": "#tripBtn",
+        "title": "\ud83d\udc49 Step 4: Compare 'Sudden Trip' vs 'VFD Soft Ramp'",
+        "why": "Sudden valve shutoffs cause Joukowsky water hammer shockwaves (+14.2 Bar) that rupture pipes; VFD soft ramp decelerates fluid safely."
+    }
+];
+        const tourKey = 'tour_done_pump-hydrodynamics-digital-twin';
+        let currentStep = 0;
+        let highlightedEl = null;
 
-            function openModal() {
-                if (guideModal) {
-                    guideModal.classList.add('active');
-                    guideModal.style.opacity = '1';
-                    guideModal.style.pointerEvents = 'auto';
-                }
+        const backdrop = document.getElementById('tourBackdrop');
+        const card = document.getElementById('tourCard');
+        const badge = document.getElementById('tourStepBadge');
+        const title = document.getElementById('tourTitle');
+        const why = document.getElementById('tourWhy');
+        const dotsContainer = document.getElementById('tourDots');
+        const prevBtn = document.getElementById('tourBtnPrev');
+        const nextBtn = document.getElementById('tourBtnNext');
+        const skipBtn = document.getElementById('tourBtnSkip');
+        const launcherBtn = document.getElementById('btnTourLauncher');
+        const guideBtn = document.getElementById('guideBtn');
+
+        if (!backdrop || !card) return;
+
+        // Build step dots
+        dotsContainer.innerHTML = '';
+        steps.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'tour-dot' + (i === 0 ? ' active' : '');
+            dotsContainer.appendChild(dot);
+        });
+
+        function positionCard(targetEl) {
+            if (window.innerWidth <= 640) {
+                card.style.top = 'auto';
+                card.style.bottom = '12px';
+                card.style.left = '10px';
+                card.style.right = '10px';
+                card.style.transform = 'none';
+                return;
             }
 
-            function closeModal() {
-                if (guideModal) {
-                    guideModal.classList.remove('active');
-                    guideModal.style.opacity = '0';
-                    guideModal.style.pointerEvents = 'none';
-                }
-                try {
-                    sessionStorage.setItem('guide_dismissed_' + window.location.pathname, '1');
-                } catch(e) {}
+            const rect = targetEl.getBoundingClientRect();
+            const cardW = 420;
+            let top = rect.bottom + 14;
+            let left = rect.left;
+
+            if (top + 210 > window.innerHeight && rect.top > 220) {
+                top = rect.top - 190;
+            }
+            if (left + cardW > window.innerWidth) {
+                left = window.innerWidth - cardW - 20;
+            }
+            if (left < 20) left = 20;
+
+            card.style.top = Math.max(20, top) + 'px';
+            card.style.left = left + 'px';
+            card.style.bottom = 'auto';
+            card.style.right = 'auto';
+            card.style.transform = 'none';
+        }
+
+        function showStep(index) {
+            if (index < 0 || index >= steps.length) return;
+            currentStep = index;
+
+            if (highlightedEl) {
+                highlightedEl.classList.remove('tour-spotlight-active');
             }
 
-            if (guideBtn) guideBtn.addEventListener('click', openModal);
-            if (guideBtnFloating) guideBtnFloating.addEventListener('click', openModal);
-            if (guideClose) guideClose.addEventListener('click', closeModal);
-            if (guideStart) guideStart.addEventListener('click', closeModal);
-
-            if (guideModal) {
-                guideModal.addEventListener('click', function(e) {
-                    if (e.target === guideModal) closeModal();
-                });
-            }
-
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Escape' && guideModal && guideModal.classList.contains('active')) {
-                    closeModal();
-                }
-            });
-
-            // Auto-open on initial visit for immediate problem & tutorial clarity on both mobile and desktop
+            const step = steps[index];
+            let targetEl = null;
             try {
-                const dismissed = sessionStorage.getItem('guide_dismissed_' + window.location.pathname);
-                const forceOpen = window.location.search.indexOf('guide') !== -1;
-                if (!dismissed || forceOpen) {
-                    setTimeout(openModal, 120);
-                }
-            } catch(e) {
-                setTimeout(openModal, 120);
+                targetEl = document.querySelector(step.target);
+            } catch(e) {}
+
+            badge.textContent = `Step ${index + 1} of ${steps.length}`;
+            title.textContent = step.title;
+            why.innerHTML = `<strong>Why:</strong> ${step.why}`;
+
+            // Update dot indicators
+            const dots = dotsContainer.querySelectorAll('.tour-dot');
+            dots.forEach((d, i) => d.classList.toggle('active', i === index));
+
+            // Button label updates
+            prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
+            nextBtn.textContent = index === steps.length - 1 ? 'Finish 🚀' : 'Next ➔';
+
+            if (targetEl) {
+                highlightedEl = targetEl;
+                targetEl.classList.add('tour-spotlight-active');
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+                setTimeout(() => positionCard(targetEl), 140);
+            } else {
+                card.style.top = '50%';
+                card.style.left = '50%';
+                card.style.transform = 'translate(-50%, -50%)';
             }
-        })();
+
+            backdrop.classList.add('active');
+            card.classList.add('active');
+        }
+
+        function endTour() {
+            if (highlightedEl) {
+                highlightedEl.classList.remove('tour-spotlight-active');
+                highlightedEl = null;
+            }
+            backdrop.classList.remove('active');
+            card.classList.remove('active');
+            try {
+                sessionStorage.setItem(tourKey, '1');
+            } catch(e) {}
+        }
+
+        function startTour() {
+            showStep(0);
+        }
+
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentStep < steps.length - 1) {
+                showStep(currentStep + 1);
+            } else {
+                endTour();
+            }
+        });
+
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentStep > 0) showStep(currentStep - 1);
+        });
+
+        skipBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            endTour();
+        });
+
+        backdrop.addEventListener('click', endTour);
+
+        if (launcherBtn) {
+            launcherBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                startTour();
+            });
+        }
+
+        if (guideBtn) {
+            guideBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                startTour();
+            });
+        }
+
+        // Auto-launch guided spotlight tour on first visit
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                try {
+                    const completed = sessionStorage.getItem(tourKey);
+                    if (!completed) {
+                        startTour();
+                    }
+                } catch(e) {
+                    startTour();
+                }
+            }, 450);
+        });
+
+        // URL parameter override: ?tour=1
+        if (window.location.search.indexOf('tour') !== -1) {
+            setTimeout(startTour, 300);
+        }
+    })();
     </script>
 
+
+    
+
+    <script>
+    (function() {
+        const steps = [
+    {
+        "target": "#speedSlider",
+        "title": "\ud83d\udc49 Step 1: Adjust VFD Motor Speed (RPM)",
+        "why": "Demonstrates pump Affinity Laws: flow scales linearly (Q \u221d n) and pressure head scales quadratically (H \u221d n\u00b2), shifting the operating duty point."
+    },
+    {
+        "target": "#suctionSlider",
+        "title": "\ud83d\udc49 Step 2: Drag Suction Pressure Below 0.8 Bar",
+        "why": "Available suction head drops below required head (NPSHa < NPSHr), triggering violent cavitation bubble collapse that destroys impeller blades."
+    },
+    {
+        "target": "#mcsaCanvas",
+        "title": "\ud83d\udc49 Step 3: Inspect MCSA Electrical FFT Spectrum",
+        "why": "Motor Current Signature Analysis detects cavitation non-intrusively via stator current sideband harmonics without needing expensive vibration sensors."
+    },
+    {
+        "target": "#tripBtn",
+        "title": "\ud83d\udc49 Step 4: Compare 'Sudden Trip' vs 'VFD Soft Ramp'",
+        "why": "Sudden valve shutoffs cause Joukowsky water hammer shockwaves (+14.2 Bar) that rupture pipes; VFD soft ramp decelerates fluid safely."
+    }
+];
+        const tourKey = 'tour_done_pump-hydrodynamics-digital-twin';
+        let currentStep = 0;
+        let highlightedEl = null;
+
+        const backdrop = document.getElementById('tourBackdrop');
+        const card = document.getElementById('tourCard');
+        const badge = document.getElementById('tourStepBadge');
+        const title = document.getElementById('tourTitle');
+        const why = document.getElementById('tourWhy');
+        const dotsContainer = document.getElementById('tourDots');
+        const prevBtn = document.getElementById('tourBtnPrev');
+        const nextBtn = document.getElementById('tourBtnNext');
+        const skipBtn = document.getElementById('tourBtnSkip');
+        const launcherBtn = document.getElementById('btnTourLauncher');
+        const guideBtn = document.getElementById('guideBtn');
+
+        if (!backdrop || !card) return;
+
+        // Build step dots
+        dotsContainer.innerHTML = '';
+        steps.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'tour-dot' + (i === 0 ? ' active' : '');
+            dotsContainer.appendChild(dot);
+        });
+
+        function positionCard(targetEl) {
+            if (window.innerWidth <= 640) {
+                if (targetEl) {
+                    const rect = targetEl.getBoundingClientRect();
+                    // If target is in lower half of screen, dock card at top so control is unobstructed!
+                    if (rect.top > window.innerHeight * 0.44) {
+                        card.style.top = '12px';
+                        card.style.bottom = 'auto';
+                    } else {
+                        card.style.top = 'auto';
+                        card.style.bottom = '12px';
+                    }
+                } else {
+                    card.style.top = 'auto';
+                    card.style.bottom = '12px';
+                }
+                card.style.left = '10px';
+                card.style.right = '10px';
+                card.style.transform = 'none';
+                return;
+            }
+
+            if (!targetEl) {
+                card.style.top = '50%';
+                card.style.left = '50%';
+                card.style.transform = 'translate(-50%, -50%)';
+                return;
+            }
+
+            const rect = targetEl.getBoundingClientRect();
+            const cardW = 420;
+            let top = rect.bottom + 14;
+            let left = rect.left;
+
+            if (top + 210 > window.innerHeight && rect.top > 220) {
+                top = rect.top - 190;
+            }
+            if (left + cardW > window.innerWidth) {
+                left = window.innerWidth - cardW - 20;
+            }
+            if (left < 20) left = 20;
+
+            card.style.top = Math.max(20, top) + 'px';
+            card.style.left = left + 'px';
+            card.style.bottom = 'auto';
+            card.style.right = 'auto';
+            card.style.transform = 'none';
+        }
+
+        function showStep(index) {
+            if (index < 0 || index >= steps.length) return;
+            currentStep = index;
+
+            if (highlightedEl) {
+                highlightedEl.classList.remove('tour-spotlight-active');
+            }
+
+            const step = steps[index];
+            let targetEl = null;
+            try {
+                targetEl = document.querySelector(step.target);
+            } catch(e) {}
+
+            badge.textContent = `Step ${index + 1} of ${steps.length}`;
+            title.textContent = step.title;
+            why.innerHTML = `<strong>Why:</strong> ${step.why}`;
+
+            // Update dot indicators
+            const dots = dotsContainer.querySelectorAll('.tour-dot');
+            dots.forEach((d, i) => d.classList.toggle('active', i === index));
+
+            // Button label updates
+            prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
+            nextBtn.textContent = index === steps.length - 1 ? 'Finish 🚀' : 'Next ➔';
+
+            if (targetEl) {
+                highlightedEl = targetEl;
+                targetEl.classList.add('tour-spotlight-active');
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                setTimeout(() => positionCard(targetEl), 150);
+            } else {
+                positionCard(null);
+            }
+
+            backdrop.classList.add('active');
+            card.classList.add('active');
+        }
+
+        function endTour() {
+            if (highlightedEl) {
+                highlightedEl.classList.remove('tour-spotlight-active');
+                highlightedEl = null;
+            }
+            backdrop.classList.remove('active');
+            card.classList.remove('active');
+            try {
+                sessionStorage.setItem(tourKey, '1');
+            } catch(e) {}
+        }
+
+        function startTour() {
+            showStep(0);
+        }
+
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentStep < steps.length - 1) {
+                showStep(currentStep + 1);
+            } else {
+                endTour();
+            }
+        });
+
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentStep > 0) showStep(currentStep - 1);
+        });
+
+        skipBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            endTour();
+        });
+
+        backdrop.addEventListener('click', endTour);
+
+        if (launcherBtn) {
+            launcherBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                startTour();
+            });
+        }
+
+        if (guideBtn) {
+            guideBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                startTour();
+            });
+        }
+
+        // Auto-launch guided spotlight tour on first visit
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                try {
+                    const completed = sessionStorage.getItem(tourKey);
+                    if (!completed) {
+                        startTour();
+                    }
+                } catch(e) {
+                    startTour();
+                }
+            }, 450);
+        });
+
+        // URL parameter override: ?tour=1
+        if (window.location.search.indexOf('tour') !== -1) {
+            setTimeout(startTour, 300);
+        }
+    })();
+    </script>
+<!-- Interactive Guided Spotlight Tour Engine -->
+    <div class="tour-backdrop" id="tourBackdrop"></div>
+    <div class="tour-card" id="tourCard">
+        <div class="tour-badge-row">
+            <span class="tour-step-badge" id="tourStepBadge">Step 1 of 4</span>
+            <button class="tour-btn-skip" id="tourBtnSkip">✕ Skip Tour</button>
+        </div>
+        <h4 class="tour-action-title" id="tourTitle">Action Title</h4>
+        <div class="tour-why-box" id="tourWhy"><strong>Why:</strong> Reason</div>
+        <div class="tour-footer">
+            <div class="tour-dots" id="tourDots"></div>
+            <div class="tour-controls">
+                <button class="btn-tour-nav btn-tour-prev" id="tourBtnPrev">⇦ Back</button>
+                <button class="btn-tour-nav btn-tour-next" id="tourBtnNext">Next ➔</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Floating Tour Launcher Pill -->
+    <button class="btn-tour-launcher" id="btnTourLauncher">🎮 Guided Tour</button>
+
+    <script>
+    (function() {
+        const steps = [
+    {
+        "target": "#speedSlider",
+        "title": "\ud83d\udc49 Step 1: Adjust VFD Motor Speed (RPM)",
+        "why": "Demonstrates pump Affinity Laws: flow scales linearly (Q \u221d n) and pressure head scales quadratically (H \u221d n\u00b2), shifting the operating duty point."
+    },
+    {
+        "target": "#suctionSlider",
+        "title": "\ud83d\udc49 Step 2: Drag Suction Pressure Below 0.8 Bar",
+        "why": "Available suction head drops below required head (NPSHa < NPSHr), triggering violent cavitation bubble collapse that destroys impeller blades."
+    },
+    {
+        "target": "#mcsaCanvas",
+        "title": "\ud83d\udc49 Step 3: Inspect MCSA Electrical FFT Spectrum",
+        "why": "Motor Current Signature Analysis detects cavitation non-intrusively via stator current sideband harmonics without needing expensive vibration sensors."
+    },
+    {
+        "target": "#tripBtn",
+        "title": "\ud83d\udc49 Step 4: Compare 'Sudden Trip' vs 'VFD Soft Ramp'",
+        "why": "Sudden valve shutoffs cause Joukowsky water hammer shockwaves (+14.2 Bar) that rupture pipes; VFD soft ramp decelerates fluid safely."
+    }
+];
+        const tourKey = 'tour_done_pump-hydrodynamics-digital-twin';
+        let currentStep = 0;
+        let highlightedEl = null;
+
+        const backdrop = document.getElementById('tourBackdrop');
+        const card = document.getElementById('tourCard');
+        const badge = document.getElementById('tourStepBadge');
+        const title = document.getElementById('tourTitle');
+        const why = document.getElementById('tourWhy');
+        const dotsContainer = document.getElementById('tourDots');
+        const prevBtn = document.getElementById('tourBtnPrev');
+        const nextBtn = document.getElementById('tourBtnNext');
+        const skipBtn = document.getElementById('tourBtnSkip');
+        const launcherBtn = document.getElementById('btnTourLauncher');
+        const guideBtn = document.getElementById('guideBtn');
+
+        if (!backdrop || !card) return;
+
+        // Build step dots
+        dotsContainer.innerHTML = '';
+        steps.forEach((_, i) => {
+            const dot = document.createElement('div');
+            dot.className = 'tour-dot' + (i === 0 ? ' active' : '');
+            dotsContainer.appendChild(dot);
+        });
+
+        function positionCard(targetEl) {
+            if (window.innerWidth <= 640) {
+                if (targetEl) {
+                    const rect = targetEl.getBoundingClientRect();
+                    // If target is in lower half of screen, dock card at top so control is unobstructed!
+                    if (rect.top > window.innerHeight * 0.44) {
+                        card.style.top = '12px';
+                        card.style.bottom = 'auto';
+                    } else {
+                        card.style.top = 'auto';
+                        card.style.bottom = '12px';
+                    }
+                } else {
+                    card.style.top = 'auto';
+                    card.style.bottom = '12px';
+                }
+                card.style.left = '10px';
+                card.style.right = '10px';
+                card.style.transform = 'none';
+                return;
+            }
+
+            if (!targetEl) {
+                card.style.top = '50%';
+                card.style.left = '50%';
+                card.style.transform = 'translate(-50%, -50%)';
+                return;
+            }
+
+            const rect = targetEl.getBoundingClientRect();
+            const cardW = 420;
+            let top = rect.bottom + 14;
+            let left = rect.left;
+
+            if (top + 210 > window.innerHeight && rect.top > 220) {
+                top = rect.top - 190;
+            }
+            if (left + cardW > window.innerWidth) {
+                left = window.innerWidth - cardW - 20;
+            }
+            if (left < 20) left = 20;
+
+            card.style.top = Math.max(20, top) + 'px';
+            card.style.left = left + 'px';
+            card.style.bottom = 'auto';
+            card.style.right = 'auto';
+            card.style.transform = 'none';
+        }
+
+        function showStep(index) {
+            if (index < 0 || index >= steps.length) return;
+            currentStep = index;
+
+            if (highlightedEl) {
+                highlightedEl.classList.remove('tour-spotlight-active');
+            }
+
+            const step = steps[index];
+            let targetEl = null;
+            try {
+                targetEl = document.querySelector(step.target);
+            } catch(e) {}
+
+            badge.textContent = `Step ${index + 1} of ${steps.length}`;
+            title.textContent = step.title;
+            why.innerHTML = `<strong>Why:</strong> ${step.why}`;
+
+            // Update dot indicators
+            const dots = dotsContainer.querySelectorAll('.tour-dot');
+            dots.forEach((d, i) => d.classList.toggle('active', i === index));
+
+            // Button label updates
+            prevBtn.style.visibility = index === 0 ? 'hidden' : 'visible';
+            nextBtn.textContent = index === steps.length - 1 ? 'Finish 🚀' : 'Next ➔';
+
+            if (targetEl) {
+                highlightedEl = targetEl;
+                targetEl.classList.add('tour-spotlight-active');
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'nearest' });
+                setTimeout(() => positionCard(targetEl), 150);
+            } else {
+                positionCard(null);
+            }
+
+            backdrop.classList.add('active');
+            card.classList.add('active');
+        }
+
+        function endTour() {
+            if (highlightedEl) {
+                highlightedEl.classList.remove('tour-spotlight-active');
+                highlightedEl = null;
+            }
+            backdrop.classList.remove('active');
+            card.classList.remove('active');
+            try {
+                sessionStorage.setItem(tourKey, '1');
+            } catch(e) {}
+        }
+
+        function startTour() {
+            showStep(0);
+        }
+
+        nextBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentStep < steps.length - 1) {
+                showStep(currentStep + 1);
+            } else {
+                endTour();
+            }
+        });
+
+        prevBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            if (currentStep > 0) showStep(currentStep - 1);
+        });
+
+        skipBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            endTour();
+        });
+
+        backdrop.addEventListener('click', endTour);
+
+        if (launcherBtn) {
+            launcherBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                startTour();
+            });
+        }
+
+        if (guideBtn) {
+            guideBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+                startTour();
+            });
+        }
+
+        // Auto-launch guided spotlight tour on first visit
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                try {
+                    const completed = sessionStorage.getItem(tourKey);
+                    if (!completed) {
+                        startTour();
+                    }
+                } catch(e) {
+                    startTour();
+                }
+            }, 450);
+        });
+
+        // URL parameter override: ?tour=1
+        if (window.location.search.indexOf('tour') !== -1) {
+            setTimeout(startTour, 300);
+        }
+    })();
+    </script>
 </body>
 </html>
