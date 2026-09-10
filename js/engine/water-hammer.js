@@ -25,7 +25,7 @@ export class WaterHammerEngine {
     /**
      * Trigger a valve shut-off transient
      * @param {number} flowM3PerHour - Initial steady-state flow
-     * @param {boolean} useSoftRamp - Whether Grundfos intelligent soft ramp is engaged
+     * @param {boolean} useSoftRamp - Whether intelligent VFD soft ramp is engaged
      */
     triggerValveClosure(flowM3PerHour, useSoftRamp = false) {
         let vInitial = (flowM3PerHour / 3600.0) / this.pipeArea; // m/s

@@ -15,11 +15,12 @@
         <div>
             <div class="brand-title">
                 <span>Intelligent Pump Hydrodynamics & Cavitation Twin</span>
-                <span class="brand-badge">Grundfos iSOLUTIONS Architecture</span>
+                <span class="brand-badge">Intelligent Hydraulics Architecture</span>
             </div>
             <p class="brand-subtitle">Centrifugal Pump Hydraulics: Affinity Laws, MCSA Non-Intrusive Cavitation Detection & Joukowsky Water Hammer Mitigation</p>
         </div>
         <div class="header-controls">
+            <button id="guideBtn" class="btn-guide">📖 How to Use & Problem Solved</button>
             <a href="https://github.com/elomarjc/pump-hydrodynamics-digital-twin" target="_blank" class="btn-link">GitHub Source</a>
         </div>
     </header>
@@ -156,9 +157,95 @@
     <!-- Footer -->
     <footer style="text-align: center; padding: 20px; font-size: 0.8rem; color: #64748b; border-top: 1px solid #1e293b; margin-top: 20px;">
         Designed & Implemented by <strong>Jacob El-Omar</strong> | Aalborg University — Bachelor's Project in Electronic Engineering<br>
-        Targeting Grundfos Global R&D & Intelligent Water Pumping Systems in Bjerringbro
+        Inspired by engineering challenges in Intelligent Water Pumping & Hydrodynamic Systems
     </footer>
 
     <script type="module" src="js/app.js"></script>
+
+    <!-- Interactive Guide & Problem Overview Modal -->
+    <div id="guideModal" class="guide-modal-overlay">
+        <div class="guide-modal-card">
+            <div class="guide-modal-header">
+                <h2>💧 Intelligent Pump Hydrodynamics & Cavitation Twin</h2>
+                <button id="guideClose" class="guide-modal-close" aria-label="Close modal">&times;</button>
+            </div>
+            <div class="guide-modal-body">
+                <div class="guide-section">
+                    <h3>🎯 The Industrial Problem Solved</h3>
+                    <p>Centrifugal pumps in water supply, cooling towers, and district heating suffer from cavitation—the violent vapor bubble collapse that occurs when suction pressure drops below liquid vapor pressure (NPSHa &lt; NPSHr). Cavitation erodes impeller blades, destroys mechanical seals, and causes pump failure. Furthermore, rapid valve shutoffs generate water hammer shockwaves (Joukowsky surge) that rupture pipelines.</p>
+                </div>
+
+                <div class="guide-section">
+                    <h3>💡 How This Digital Twin Solves It</h3>
+                    <p>Simulates pump Affinity Laws (Q proportional to n, H proportional to n^2), system resistance curves, Thoma cavitation parameters, and Motor Current Signature Analysis (MCSA) that detects cavitation non-intrusively via electrical stator current sidebands without expensive external vibration sensors.</p>
+                </div>
+
+                <div class="guide-section">
+                    <h3>🕹️ Interactive Quickstart Tutorial (Try This Now!)</h3>
+                    <ul class="guide-step-list">
+                    <li class="guide-step-item">
+                        <span class="guide-step-num">1</span>
+                        <div class="guide-step-content">
+                            <strong>Affinity Laws & Operating Point:</strong> Adjust VFD Motor Speed (RPM) and watch the Cyan Pump Head Curve scale with Affinity Laws, shifting the operating duty point.
+                        </div>
+                    </li>
+                    <li class="guide-step-item">
+                        <span class="guide-step-num">2</span>
+                        <div class="guide-step-content">
+                            <strong>Induce Cavitation Inception:</strong> Drag Suction Pressure down below 0.8 Bar: Available NPSH drops below Required NPSH, triggering CAVITATION INCEPTION. Notice vapor bubbles around the impeller eye and cavitation sidebands spiking on the center MCSA FFT spectrum.
+                        </div>
+                    </li>
+                    <li class="guide-step-item">
+                        <span class="guide-step-num">3</span>
+                        <div class="guide-step-content">
+                            <strong>Compare Water Hammer vs Soft Ramp:</strong> Compare '💥 Sudden Trip (Shockwave)' (+14.2 Bar Joukowsky surge) against '🛡️ VFD Soft Ramp' (safe, shock-free fluid deceleration).
+                        </div>
+                    </li>
+                    </ul>
+                </div>
+
+                <div class="guide-section">
+                    <h3>📊 Telemetry & Control Glossary</h3>
+                    <ul style="padding-left: 20px; display: flex; flex-direction: column; gap: 6px; font-size: 0.85rem;">
+                        <li><strong>NPSHa vs. NPSHr:</strong> Net Positive Suction Head Available (NPSHa) must exceed Net Positive Suction Head Required (NPSHr) to prevent fluid pressure from dropping below vapor pressure.</li><li><strong>MCSA (Motor Current Signature Analysis):</strong> Non-intrusive electrical sensing method that detects mechanical cavitation torque ripple by monitoring stator current FFT sidebands (fe ± k*fr).</li><li><strong>Joukowsky Water Hammer:</strong> Pressure surge equation (&Delta;P = &rho; * a * &Delta;v) describing shockwaves that propagate through piping when a fluid column is stopped instantaneously.</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="guide-modal-footer">
+                <button id="guideStart" class="btn-guide-start">🚀 Start Interactive Simulator</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Toggle Script -->
+    <script>
+        (function() {
+            const guideBtn = document.getElementById('guideBtn');
+            const guideModal = document.getElementById('guideModal');
+            const guideClose = document.getElementById('guideClose');
+            const guideStart = document.getElementById('guideStart');
+
+            function openModal() { if (guideModal) guideModal.classList.add('active'); }
+            function closeModal() { if (guideModal) guideModal.classList.remove('active'); }
+
+            if (guideBtn) guideBtn.addEventListener('click', openModal);
+            if (guideClose) guideClose.addEventListener('click', closeModal);
+            if (guideStart) guideStart.addEventListener('click', closeModal);
+            if (window.location.search.indexOf('guide') !== -1) openModal();
+
+            if (guideModal) {
+                guideModal.addEventListener('click', function(e) {
+                    if (e.target === guideModal) closeModal();
+                });
+            }
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && guideModal && guideModal.classList.contains('active')) {
+                    closeModal();
+                }
+            });
+        })();
+    </script>
+
 </body>
 </html>

@@ -1,6 +1,6 @@
 /**
  * Centrifugal Pump Hydrodynamics & Affinity Laws Engine
- * Models a multi-stage industrial booster pump (Grundfos CRE series):
+ * Models a multi-stage industrial booster pump (CRE-class booster series):
  * - Rated speed n0 = 2900 RPM
  * - Shutoff head H0 = 50 m
  * - Max flow Qmax = 32 m^3/h
