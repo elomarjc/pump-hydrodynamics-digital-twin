@@ -42,25 +42,35 @@ flowchart LR
 
 The pump head curve $H_{\text{pump}}$ scales dynamically with rotational speed $n$ according to hydraulic Affinity Laws:
 
-$$\frac{Q_1}{Q_2} = \frac{n_1}{n_2}, \quad \frac{H_1}{H_2} = \left(\frac{n_1}{n_2}\right)^2, \quad \frac{P_1}{P_2} = \left(\frac{n_1}{n_2}\right)^3$$
+$$
+\frac{Q_1}{Q_2} = \frac{n_1}{n_2}, \quad \frac{H_1}{H_2} = \left(\frac{n_1}{n_2}\right)^2, \quad \frac{P_1}{P_2} = \left(\frac{n_1}{n_2}\right)^3
+$$
 
 The instantaneous head curve is modeled as:
 
-$$H_{\text{pump}}(Q, n) = H_0 \left(\frac{n}{n_0}\right)^2 - k_p Q^2$$
+$$
+H_{\text{pump}}(Q, n) = H_0 \left(\frac{n}{n_0}\right)^2 - k_p Q^2
+$$
 
 where $H_0 = 52\text{ m}$ is the shutoff head and $k_p = 0.045$ is the internal hydrodynamic loss coefficient.
 
 The system resistance curve combines static geodetic elevation lift $H_{\text{static}}$ and friction head loss through pipe and valves:
 
-$$H_{\text{sys}}(Q) = H_{\text{static}} + k_{\text{valve}} Q^2$$
+$$
+H_{\text{sys}}(Q) = H_{\text{static}} + k_{\text{valve}} Q^2
+$$
 
 The operating duty point $(Q^*, H^*)$ is the exact physical intersection where $H_{\text{pump}}(Q^*) = H_{\text{sys}}(Q^*)$:
 
-$$Q^* = \sqrt{\frac{H_0 \left(\frac{n}{n_0}\right)^2 - H_{\text{static}}}{k_p + k_{\text{valve}}}}$$
+$$
+Q^* = \sqrt{\frac{H_0 \left(\frac{n}{n_0}\right)^2 - H_{\text{static}}}{k_p + k_{\text{valve}}}}
+$$
 
 Hydraulic power output:
 
-$$P_{\text{hyd}} = \frac{\rho g Q^* H^*}{3600} \quad [\text{Watts}]$$
+$$
+P_{\text{hyd}} = \frac{\rho g Q^* H^*}{3600} \quad [\text{Watts}]
+$$
 
 ---
 
@@ -68,17 +78,23 @@ $$P_{\text{hyd}} = \frac{\rho g Q^* H^*}{3600} \quad [\text{Watts}]$$
 
 Cavitation begins when local static pressure at the impeller inlet drops below the fluid vapor pressure $P_v$:
 
-$$NPSH_a = \frac{P_{\text{suction}} - P_v}{\rho g} + \frac{v_s^2}{2g}$$
+$$
+NPSH_a = \frac{P_{\text{suction}} - P_v}{\rho g} + \frac{v_s^2}{2g}
+$$
 
 where $P_v = 2340\text{ Pa}$ at $20^\circ\text{C}$, $\rho = 1000\text{ kg/m}^3$, and $g = 9.81\text{ m/s}^2$.
 
 Required NPSH ($NPSH_r$) grows quadratically with flow rate:
 
-$$NPSH_r(Q) = NPSH_0 \left(\frac{n}{n_0}\right)^2 + k_{\text{npsh}} Q^2$$
+$$
+NPSH_r(Q) = NPSH_0 \left(\frac{n}{n_0}\right)^2 + k_{\text{npsh}} Q^2
+$$
 
 The cavitation boundary criterion:
 
-$$\sigma_{\text{cav}} = \begin{cases} \text{Safe (Normal Flow)}, & NPSH_a \ge NPSH_r \\ \text{Cavitation Inception}, & NPSH_a < NPSH_r \end{cases}$$
+$$
+\sigma_{\text{cav}} = \begin{cases} \text{Safe (Normal Flow)}, & NPSH_a \ge NPSH_r \\ \text{Cavitation Inception}, & NPSH_a < NPSH_r \end{cases}
+$$
 
 ---
 
@@ -88,11 +104,15 @@ Rather than installing costly external accelerometers or hydrophones, cavitation
 
 Torque ripples induced by collapsing micro-cavities modulate the motor's magnetic air-gap flux, producing characteristic sideband harmonics around the fundamental electrical supply frequency $f_e$:
 
-$$f_{\text{sb}} = f_e \pm k \cdot f_r$$
+$$
+f_{\text{sb}} = f_e \pm k \cdot f_r
+$$
 
 where $f_r = n / 60$ is the mechanical shaft frequency and $k$ is the harmonic order (including blade pass frequency $k = Z_{\text{vanes}} = 5$). The FFT analyzer measures the sideband-to-carrier ratio ($SCR$ in dB) to compute the Cavitation Health Index ($CHI$):
 
-$$CHI = \min\left(100\%, \frac{NPSH_r - NPSH_a}{NPSH_r} \times 100\%\right)$$
+$$
+CHI = \min\left(100\%, \frac{NPSH_r - NPSH_a}{NPSH_r} \times 100\%\right)
+$$
 
 ---
 
@@ -100,7 +120,9 @@ $$CHI = \min\left(100\%, \frac{NPSH_r - NPSH_a}{NPSH_r} \times 100\%\right)$$
 
 Rapid downstream valve closure generates an acoustic pressure wave traveling upstream toward the pump:
 
-$$\Delta P = \rho \cdot a \cdot \Delta v$$
+$$
+\Delta P = \rho \cdot a \cdot \Delta v
+$$
 
 where:
 * $a = 1200\text{ m/s}$ is the acoustic sonic wave speed in water-filled steel piping.
