@@ -129,3 +129,260 @@ class PumpDigitalTwinApp {
 window.addEventListener('DOMContentLoaded', () => {
     window.app = new PumpDigitalTwinApp();
 });
+
+
+// ==========================================
+// MOBILE FLOATING HUD & DRAWER CONTROLLER
+// ==========================================
+(function initMobileFloatingHUD() {
+  const drawer = document.getElementById('telemetryDrawer');
+  const backdrop = document.getElementById('telemetryBackdrop');
+  const btnSettings = document.getElementById('btn-hud-settings');
+  const btnTrigger = document.getElementById('btn-trigger-controls-drawer');
+  const btnClose = document.getElementById('btn-close-telemetry');
+  const btnFullscreen = document.getElementById('btn-hud-fullscreen');
+  const btnMenu = document.getElementById('btn-hud-menu');
+
+  function openDrawer() {
+    if (drawer) drawer.classList.add('open');
+    if (backdrop) backdrop.classList.add('active');
+  }
+
+  function closeDrawer() {
+    if (drawer) drawer.classList.remove('open');
+    if (backdrop) backdrop.classList.remove('active');
+  }
+
+  if (btnSettings) btnSettings.addEventListener('click', openDrawer);
+  if (btnTrigger) btnTrigger.addEventListener('click', openDrawer);
+  if (btnClose) btnClose.addEventListener('click', closeDrawer);
+  if (backdrop) backdrop.addEventListener('click', closeDrawer);
+
+  if (btnMenu) {
+    btnMenu.addEventListener('click', () => {
+      const guideBtn = document.getElementById('guideBtn') || document.getElementById('btnTourLauncher');
+      if (guideBtn) guideBtn.click();
+    });
+  }
+
+  // Cross-platform Universal Fullscreen
+  if (btnFullscreen) {
+    btnFullscreen.addEventListener('click', () => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        if (document.documentElement.requestFullscreen) {
+          document.documentElement.requestFullscreen().catch(() => {
+            document.body.classList.toggle('immersive-fullscreen');
+          });
+        } else if (document.documentElement.webkitRequestFullscreen) {
+          document.documentElement.webkitRequestFullscreen();
+        } else {
+          document.body.classList.toggle('immersive-fullscreen');
+        }
+      } else {
+        if (document.exitFullscreen) {
+          document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
+        document.body.classList.remove('immersive-fullscreen');
+      }
+    });
+  }
+
+  // Left Rail: VFD Impeller Speed (1500 to 3400 RPM)
+  const vSpeed = document.getElementById('slider-speed-vertical');
+  const dSpeed = document.getElementById('speedSlider');
+  const valSpeed = document.getElementById('hud-speed-val');
+  const fillSpeed = document.getElementById('rail-fill-speed');
+
+  function updateSpeedHUD(val) {
+    const num = parseFloat(val);
+    if (valSpeed) valSpeed.textContent = Math.round(num) + ' RPM';
+    if (fillSpeed) {
+      // Range is 1500 to 3400 (span = 1900)
+      const pct = Math.max(0, Math.min(100, ((num - 1500) / 1900) * 100));
+      fillSpeed.style.height = pct + '%';
+    }
+    if (vSpeed && Math.abs(parseFloat(vSpeed.value) - num) > 1) {
+      vSpeed.value = num;
+    }
+  }
+
+  if (vSpeed && dSpeed) {
+    vSpeed.min = dSpeed.min || '1500';
+    vSpeed.max = dSpeed.max || '3400';
+    vSpeed.step = dSpeed.step || '50';
+    vSpeed.value = dSpeed.value;
+    updateSpeedHUD(dSpeed.value);
+
+    vSpeed.addEventListener('input', (e) => {
+      dSpeed.value = e.target.value;
+      dSpeed.dispatchEvent(new Event('input', { bubbles: true }));
+      updateSpeedHUD(e.target.value);
+    });
+
+    dSpeed.addEventListener('input', (e) => {
+      updateSpeedHUD(e.target.value);
+    });
+  }
+
+  // Right Rail: Discharge Valve Opening (20 to 100%)
+  const vValve = document.getElementById('slider-valve-vertical');
+  const dValve = document.getElementById('valveSlider');
+  const valValve = document.getElementById('hud-valve-val');
+  const fillValve = document.getElementById('rail-fill-valve');
+
+  function updateValveHUD(val) {
+    const num = parseFloat(val);
+    if (valValve) valValve.textContent = Math.round(num) + '%';
+    if (fillValve) {
+      // Range is 20 to 100 (span = 80)
+      const pct = Math.max(0, Math.min(100, ((num - 20) / 80) * 100));
+      fillValve.style.height = pct + '%';
+    }
+    if (vValve && Math.abs(parseFloat(vValve.value) - num) > 0.5) {
+      vValve.value = num;
+    }
+  }
+
+  if (vValve && dValve) {
+    vValve.min = dValve.min || '20';
+    vValve.max = dValve.max || '100';
+    vValve.step = dValve.step || '5';
+    vValve.value = dValve.value;
+    updateValveHUD(dValve.value);
+
+    vValve.addEventListener('input', (e) => {
+      dValve.value = e.target.value;
+      dValve.dispatchEvent(new Event('input', { bubbles: true }));
+      updateValveHUD(e.target.value);
+    });
+
+    dValve.addEventListener('input', (e) => {
+      updateValveHUD(e.target.value);
+    });
+  }
+
+  // Transport and Play/Pause
+  let isSimPaused = false;
+  const railPauseBtn = document.getElementById('btn-rail-pause');
+  const transPauseBtn = document.getElementById('btn-transport-pause');
+  const pauseIcon1 = document.getElementById('rail-pause-icon');
+  const pauseIcon2 = document.getElementById('hud-pause-icon');
+  const pauseText = document.getElementById('hud-pause-text');
+
+  function toggleSimPause() {
+    isSimPaused = !isSimPaused;
+    const symbol = isSimPaused ? '▶' : '⏸';
+    const text = isSimPaused ? 'RESUME' : 'PAUSE';
+    if (pauseIcon1) pauseIcon1.textContent = symbol;
+    if (pauseIcon2) pauseIcon2.textContent = symbol;
+    if (pauseText) pauseText.textContent = text;
+    if (transPauseBtn) transPauseBtn.classList.toggle('active', isSimPaused);
+  }
+
+  if (railPauseBtn) railPauseBtn.addEventListener('click', toggleSimPause);
+  if (transPauseBtn) transPauseBtn.addEventListener('click', toggleSimPause);
+
+  const stepBack = document.getElementById('btn-transport-step-back');
+  const stepFwd = document.getElementById('btn-transport-step-fwd');
+  if (stepBack && dSpeed) {
+    stepBack.addEventListener('click', () => {
+      let v = Math.max(1500, parseFloat(dSpeed.value) - 100);
+      dSpeed.value = v;
+      dSpeed.dispatchEvent(new Event('input', { bubbles: true }));
+      updateSpeedHUD(v);
+    });
+  }
+  if (stepFwd && dSpeed) {
+    stepFwd.addEventListener('click', () => {
+      let v = Math.min(3400, parseFloat(dSpeed.value) + 100);
+      dSpeed.value = v;
+      dSpeed.dispatchEvent(new Event('input', { bubbles: true }));
+      updateSpeedHUD(v);
+    });
+  }
+
+  // Mode Cards
+  const modeBep = document.getElementById('hud-mode-bep');
+  const modeSlam = document.getElementById('hud-mode-slam');
+  const modeRamp = document.getElementById('hud-mode-ramp');
+  const modeNpsh = document.getElementById('hud-mode-npsh');
+  const tripBtn = document.getElementById('tripBtn');
+  const softRampBtn = document.getElementById('softRampBtn');
+  const dSuction = document.getElementById('suctionSlider');
+  const modeIndicator = document.getElementById('hud-mode-indicator');
+  const statusSummary = document.getElementById('hud-status-summary');
+
+  function clearActiveModes() {
+    [modeBep, modeSlam, modeRamp, modeNpsh].forEach(m => m && m.classList.remove('active'));
+  }
+
+  if (modeBep) {
+    modeBep.addEventListener('click', () => {
+      clearActiveModes();
+      modeBep.classList.add('active');
+      if (dSpeed) {
+        dSpeed.value = '2900';
+        dSpeed.dispatchEvent(new Event('input', { bubbles: true }));
+        updateSpeedHUD('2900');
+      }
+      if (dValve) {
+        dValve.value = '75';
+        dValve.dispatchEvent(new Event('input', { bubbles: true }));
+        updateValveHUD('75');
+      }
+      if (dSuction) {
+        dSuction.value = '1.8';
+        dSuction.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      if (modeIndicator) modeIndicator.textContent = 'AFFINITY LAWS';
+      if (statusSummary) statusSummary.textContent = '2900 RPM BEP';
+    });
+  }
+
+  if (modeSlam) {
+    modeSlam.addEventListener('click', () => {
+      clearActiveModes();
+      modeSlam.classList.add('active');
+      if (tripBtn) tripBtn.click();
+      if (modeIndicator) modeIndicator.textContent = 'VALVE SLAM';
+      if (statusSummary) statusSummary.textContent = 'WATER HAMMER';
+      setTimeout(() => {
+        if (modeSlam.classList.contains('active')) {
+          modeBep.classList.add('active');
+          modeSlam.classList.remove('active');
+        }
+      }, 3500);
+    });
+  }
+
+  if (modeRamp) {
+    modeRamp.addEventListener('click', () => {
+      clearActiveModes();
+      modeRamp.classList.add('active');
+      if (softRampBtn) softRampBtn.click();
+      if (modeIndicator) modeIndicator.textContent = 'VFD SOFT RAMP';
+      if (statusSummary) statusSummary.textContent = 'RAMP ACTIVE';
+      setTimeout(() => {
+        if (modeRamp.classList.contains('active')) {
+          modeBep.classList.add('active');
+          modeRamp.classList.remove('active');
+        }
+      }, 4000);
+    });
+  }
+
+  if (modeNpsh) {
+    modeNpsh.addEventListener('click', () => {
+      clearActiveModes();
+      modeNpsh.classList.add('active');
+      if (dSuction) {
+        dSuction.value = '0.4';
+        dSuction.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+      if (modeIndicator) modeIndicator.textContent = 'CAVITATION';
+      if (statusSummary) statusSummary.textContent = 'NPSHa < NPSHr';
+    });
+  }
+})();
