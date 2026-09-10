@@ -1,0 +1,11 @@
+{
+  "name": "pump-hydrodynamics-digital-twin",
+  "version": "1.0.0",
+  "description": "Centrifugal Pump Hydrodynamics & Cavitation Diagnostic Digital Twin with Affinity Laws and MCSA",
+  "type": "module",
+  "scripts": {
+    "test": "node --test test/test_pump_twin.mjs"
+  },
+  "author": "Jacob El-Omar",
+  "license": "MIT"
+}
